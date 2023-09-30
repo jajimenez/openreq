@@ -19,6 +19,7 @@ services:
     # (Adding the "ports" property to this file will not forward from a Codespace.)
     
     environment:
+      - SECRET_KEY=example  # In production, this should be a long random string.
       - DB_HOST=db
       - DB_NAME=openreq
       - DB_USER=openreq
