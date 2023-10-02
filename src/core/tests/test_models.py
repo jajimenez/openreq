@@ -7,7 +7,6 @@ class ModelTests(TestCase):
 
     def test_create_user_successful(self):
         """Test creating a user successfully."""
-
         username = "example_user"
         password = "example_password"
 
