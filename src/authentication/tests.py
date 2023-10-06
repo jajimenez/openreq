@@ -15,6 +15,7 @@ class AuthenticationApiTests(TestCase):
     """Authentication API tests."""
 
     def setUp(self):
+        """Initialize each test."""
         self.client = APIClient()
 
     def test_create_token_valid_credentials(self):
@@ -76,7 +77,6 @@ class AuthenticationApiTests(TestCase):
 
     def test_create_token_invalid_credentials(self):
         """Test creating a token for invalid credentials."""
-
         # Create user
         username = "test_user"
         password = "valid_password"
