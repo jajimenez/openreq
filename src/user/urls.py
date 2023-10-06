@@ -7,5 +7,5 @@ from rest_framework.authtoken.views import ObtainAuthToken
 app_name = "user"
 
 urlpatterns = [
-    path("token/", ObtainAuthToken.as_view(), name="token")
+    path("auth/", ObtainAuthToken.as_view(), name="auth")
 ]

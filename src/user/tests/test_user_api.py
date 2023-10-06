@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 
-TOKEN_URL = reverse("user:token")
+AUTH_URL = reverse("user:auth")
 
 
 class UserApiTests(TestCase):
@@ -29,7 +29,7 @@ class UserApiTests(TestCase):
 
         # Make request
         data = {"username": username, "password": password}
-        res = self.client.post(TOKEN_URL, data)
+        res = self.client.post(AUTH_URL, data)
 
         # Check response
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -39,7 +39,7 @@ class UserApiTests(TestCase):
         """Test creating a token without the username."""
         # Make request
         data = {"password": "test_password"}
-        res = self.client.post(TOKEN_URL, data)
+        res = self.client.post(AUTH_URL, data)
 
         # Check response
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -49,7 +49,7 @@ class UserApiTests(TestCase):
         """Test creating a token with an empty username."""
         # Make request
         data = {"username": "", "password": "test_password"}
-        res = self.client.post(TOKEN_URL, data)
+        res = self.client.post(AUTH_URL, data)
 
         # Check response
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -59,7 +59,7 @@ class UserApiTests(TestCase):
         """Test creating a token without the password."""
         # Make request
         data = {"username": "test_user"}
-        res = self.client.post(TOKEN_URL, data)
+        res = self.client.post(AUTH_URL, data)
 
         # Check response
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -69,7 +69,7 @@ class UserApiTests(TestCase):
         """Test creating a token with an empty password."""
         # Make request
         data = {"username": "test_user", "password": ""}
-        res = self.client.post(TOKEN_URL, data)
+        res = self.client.post(AUTH_URL, data)
 
         # Check response
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
@@ -87,7 +87,7 @@ class UserApiTests(TestCase):
 
         # Make request
         data = {"username": username, "password": "invalid_password"}
-        res = self.client.post(TOKEN_URL, data)
+        res = self.client.post(AUTH_URL, data)
 
         # Check response
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
