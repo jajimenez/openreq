@@ -1,4 +1,4 @@
-"""User API tests."""
+"""Authentication API tests."""
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -11,15 +11,14 @@ from rest_framework import status
 AUTH_URL = reverse("api-auth")
 
 
-class UserApiTests(TestCase):
-    """User API tests."""
+class AuthenticationApiTests(TestCase):
+    """Authentication API tests."""
 
     def setUp(self):
         self.client = APIClient()
 
     def test_create_token_valid_credentials(self):
         """Test creating a token for valid credentials."""
-
         # Create user
         username = "test_user"
         password = "test_password"
