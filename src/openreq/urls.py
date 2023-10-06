@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+from rest_framework.authtoken.views import obtain_auth_token
 
 
 urlpatterns = [
@@ -28,5 +29,6 @@ urlpatterns = [
         SpectacularSwaggerView.as_view(url_name="api-schema"),
         name="api-docs"
     ),
+    path("api/auth/", obtain_auth_token),
     path("api/user/", include("user.urls"))
 ]
