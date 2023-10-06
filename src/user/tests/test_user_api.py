@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 from rest_framework import status
 
 
-AUTH_URL = reverse("user:auth")
+AUTH_URL = reverse("api-auth")
 
 
 class UserApiTests(TestCase):
