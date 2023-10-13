@@ -8,5 +8,5 @@ from user.views import GetAuthUserView
 app_name = "user"
 
 urlpatterns = [
-    path("me", GetAuthUserView.as_view(), name="me")
+    path("me/", GetAuthUserView.as_view(), name="me")
 ]
