@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+# from core.models import Tag, Incident
+from core.models import Incident
+
+
+# Register models
+# admin.site.register(Tag)
+admin.site.register(Incident)
