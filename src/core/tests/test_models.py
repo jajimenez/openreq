@@ -48,7 +48,7 @@ class ModelTests(TestCase):
 
         self.assertEqual(inc.user.username, username)
         self.assertTrue(inc.user.check_password(password))
-        self.assertEqual(inc.user.description, desc)
+        self.assertEqual(inc.description, desc)
         # self.assertEqual(inc.tags.length, 2)
         # self.assertEqual(inc.tags[0].name, name1)
         # self.assertEqual(inc.tags[1].name, name2)
