@@ -1,1 +1,1 @@
-"""User API."""
+"""OpenReq - User."""

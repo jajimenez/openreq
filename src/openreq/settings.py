@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "core",
     "authentication",
-    "user"
+    "user",
+    "incident"
 ]
 
 MIDDLEWARE = [
