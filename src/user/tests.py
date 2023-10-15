@@ -1,4 +1,4 @@
-"""User API tests."""
+"""OpenReq - User - Tests."""
 
 from django.test import TestCase
 from django.contrib.auth import get_user_model
@@ -14,7 +14,7 @@ ME_URL = reverse("user:me")
 
 
 class PublicUserApiTests(TestCase):
-    """Public User API tests."""
+    """User API unauthenticated tests."""
 
     def setUp(self):
         """Initialize each test."""
@@ -27,7 +27,7 @@ class PublicUserApiTests(TestCase):
 
 
 class PrivateUserApiTests(TestCase):
-    """Private User API tests."""
+    """User API authenticated tests."""
 
     def setUp(self):
         """Initialize each test."""

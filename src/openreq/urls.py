@@ -1,5 +1,4 @@
-"""
-URL configuration for openreq project.
+"""OpenReq - URLs.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -30,5 +29,6 @@ urlpatterns = [
         name="api-docs"
     ),
     path("api/auth/", obtain_auth_token, name="api-auth"),
-    path("api/user/", include("user.urls"))
+    path("api/user/", include("user.urls")),
+    path("api/incident/", include("incident.urls"))
 ]

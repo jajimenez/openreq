@@ -1,4 +1,4 @@
-"""User API views."""
+"""OpenReq - User - Views."""
 
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.authentication import TokenAuthentication
@@ -11,6 +11,7 @@ class GetAuthUserView(RetrieveAPIView):
     """View for getting the authenticated user."""
 
     serializer_class = UserSerializer
+
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 

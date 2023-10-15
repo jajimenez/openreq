@@ -1,4 +1,4 @@
-"""User API URLs."""
+"""OpenReq - User - URLs."""
 
 from django.urls import path
 
