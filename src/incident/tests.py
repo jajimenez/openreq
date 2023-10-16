@@ -61,7 +61,7 @@ class PrivateIncidentApiTests(TestCase):
             Incident.objects.create(
                 user=self.user,
                 subject=f"Incident {i}",
-                description=f"Incident {i} detail"
+                description=f"Description {i}"
             )
 
         res = self.client.get(INCIDENT_LIST_URL)
@@ -74,9 +74,7 @@ class PrivateIncidentApiTests(TestCase):
     def test_get_incident(self):
         """Test getting an incident."""
         i = Incident.objects.create(
-            user=self.user,
-            subject="Incident",
-            description="Incident detail"
+            user=self.user, subject="Incident", description="Description"
         )
 
         url = get_incident_detail_url(i.id)
@@ -88,11 +86,7 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_create_incident(self):
         """Test creating a incident."""
-        data = {
-            "subject": "Incident",
-            "description": "Incident detail"
-        }
-
+        data = {"subject": "Incident", "description": "Description"}
         res = self.client.post(INCIDENT_URL, data)
 
         self.assertEqual(res.status_code, HTTP_201_CREATED)
@@ -102,35 +96,84 @@ class PrivateIncidentApiTests(TestCase):
         incident = Incident.objects.get(id=res.data["id"])
 
         for k, v in data.items():
-            # Check response data
+            # Check response
             self.assertIn(k, res.data)
             self.assertEqual(res.data[k], v)
 
-            # Check database data
+            # Check database object
             self.assertEqual(getattr(incident, k), v)
 
         self.assertEqual(incident.user, self.user)
 
     def test_update_incident(self):
         """Test updating an incident."""
+        prev_sub = "Incident"
+        prev_desc = "Incident description."
+
         incident = Incident.objects.create(
-            user=self.user,
-            subject="Incident",
-            description="Incident description."
+            user=self.user, subject=prev_sub, description=prev_desc
         )
 
-        incident_id = incident.id
+        prev_id = incident.id
 
-        data = {
-            "subject": "New incident",
-            "description": "New incident description"
-        }
-
+        # Make request
         url = get_incident_detail_url(incident.id)
+        data = {"subject": "New incident", "description": "New description"}
         res = self.client.put(url, data)
+
+        # Check response
+        self.assertEqual(res.status_code, HTTP_200_OK)
+        self.assertEqual(len(res.data), 3)
+
+        for i in ("id", "subject", "description"):
+            self.assertIn(i, res.data)
+
+        self.assertNotIn("user", res.data)
+
+        self.assertEqual(res.data["id"], prev_id)
+        self.assertEqual(res.data["subject"], data["subject"])
+        self.assertEqual(res.data["description"], data["description"])
+
+        # Check database object
         incident.refresh_from_db()
 
-        self.assertEqual(incident.id, incident_id)
+        self.assertEqual(incident.id, prev_id)
         self.assertEqual(incident.user, self.user)
         self.assertEqual(incident.subject, data["subject"])
         self.assertEqual(incident.description, data["description"])
+
+    def test_partial_update_incident(self):
+        """Test updating an incident partially."""
+        prev_sub = "Incident"
+        prev_desc = "Incident description."
+
+        incident = Incident.objects.create(
+            user=self.user, subject=prev_sub, description=prev_desc
+        )
+
+        prev_id = incident.id
+
+        # Make request
+        url = get_incident_detail_url(incident.id)
+        data = {"subject": "New subject"}
+        res = self.client.patch(url, data)
+
+        # Check response
+        self.assertEqual(res.status_code, HTTP_200_OK)
+        self.assertEqual(len(res.data), 3)
+
+        for i in ("id", "subject", "description"):
+            self.assertIn(i, res.data)
+
+        self.assertNotIn("user", res.data)
+        self.assertEqual(res.data["id"], prev_id)
+        self.assertEqual(res.data["subject"], data["subject"])
+        self.assertEqual(res.data["description"], prev_desc)
+
+        # Check database object
+        incident.refresh_from_db()
+
+        self.assertEqual(incident.id, prev_id)
+        self.assertEqual(incident.user, self.user)
+        self.assertEqual(incident.subject, data["subject"])
+        self.assertEqual(incident.description, prev_desc)
