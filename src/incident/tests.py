@@ -57,6 +57,7 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_get_incident_list(self):
         """Test getting the list of incidents of the user."""
+        # Create objects
         for i in range(1, 4):
             Incident.objects.create(
                 user=self.user,
@@ -64,7 +65,10 @@ class PrivateIncidentApiTests(TestCase):
                 description=f"Description {i}"
             )
 
+        # Make request
         res = self.client.get(INCIDENT_LIST_URL)
+
+        # Check response
         self.assertEqual(res.status_code, HTTP_200_OK)
 
         incidents = Incident.objects.filter(user=self.user).order_by("-id")
@@ -73,12 +77,16 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_get_incident(self):
         """Test getting an incident."""
+        # Create object
         i = Incident.objects.create(
             user=self.user, subject="Incident", description="Description"
         )
 
+        # Make request
         url = get_incident_detail_url(i.id)
         res = self.client.get(url)
+
+        # Check response
         self.assertEqual(res.status_code, HTTP_200_OK)
 
         ser = IncidentDetailSerializer(i)
@@ -86,27 +94,33 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_create_incident(self):
         """Test creating a incident."""
+        # Make request
         data = {"subject": "Incident", "description": "Description"}
         res = self.client.post(INCIDENT_URL, data)
 
+        # Check response
         self.assertEqual(res.status_code, HTTP_201_CREATED)
         self.assertEqual(len(res.data), 3)
-        self.assertIn("id", res.data)
 
-        incident = Incident.objects.get(id=res.data["id"])
+        self.assertIn("id", res.data)
+        self.assertIsNotNone(res.data["id"])
+
+        self.assertNotIn("user", res.data)
 
         for k, v in data.items():
-            # Check response
             self.assertIn(k, res.data)
             self.assertEqual(res.data[k], v)
 
-            # Check database object
-            self.assertEqual(getattr(incident, k), v)
-
+        # Check database object
+        incident = Incident.objects.get(id=res.data["id"])
         self.assertEqual(incident.user, self.user)
 
-    def test_update_incident(self):
-        """Test updating an incident."""
+        for k, v in data.items():
+            self.assertEqual(getattr(incident, k), v)
+
+    def test_full_update_incident(self):
+        """Test updating an incident fully."""
+        # Create incident
         prev_sub = "Incident"
         prev_desc = "Incident description."
 
@@ -125,25 +139,27 @@ class PrivateIncidentApiTests(TestCase):
         self.assertEqual(res.status_code, HTTP_200_OK)
         self.assertEqual(len(res.data), 3)
 
-        for i in ("id", "subject", "description"):
-            self.assertIn(i, res.data)
+        self.assertIn("id", res.data)
+        self.assertEqual(res.data["id"], prev_id)
 
         self.assertNotIn("user", res.data)
 
-        self.assertEqual(res.data["id"], prev_id)
-        self.assertEqual(res.data["subject"], data["subject"])
-        self.assertEqual(res.data["description"], data["description"])
+        for k, v in data.items():
+            self.assertIn(k, res.data)
+            self.assertEqual(res.data[k], v)
 
         # Check database object
         incident.refresh_from_db()
 
         self.assertEqual(incident.id, prev_id)
         self.assertEqual(incident.user, self.user)
-        self.assertEqual(incident.subject, data["subject"])
-        self.assertEqual(incident.description, data["description"])
+
+        for k, v in data.items():
+            self.assertEqual(getattr(incident, k), v)
 
     def test_partial_update_incident(self):
         """Test updating an incident partially."""
+        # Create incident
         prev_sub = "Incident"
         prev_desc = "Incident description."
 
@@ -154,7 +170,7 @@ class PrivateIncidentApiTests(TestCase):
         prev_id = incident.id
 
         # Make request
-        url = get_incident_detail_url(incident.id)
+        url = get_incident_detail_url(prev_id)
         data = {"subject": "New subject"}
         res = self.client.patch(url, data)
 
@@ -166,6 +182,7 @@ class PrivateIncidentApiTests(TestCase):
             self.assertIn(i, res.data)
 
         self.assertNotIn("user", res.data)
+
         self.assertEqual(res.data["id"], prev_id)
         self.assertEqual(res.data["subject"], data["subject"])
         self.assertEqual(res.data["description"], prev_desc)
@@ -177,3 +194,26 @@ class PrivateIncidentApiTests(TestCase):
         self.assertEqual(incident.user, self.user)
         self.assertEqual(incident.subject, data["subject"])
         self.assertEqual(incident.description, prev_desc)
+
+    def test_update_incident_user_no_success(self):
+        """Test updating the user of an incident, which is not allowed."""
+        # Create incident
+        incident = Incident.objects.create(
+            user=self.user, subject="Incident", description="Description"
+        )
+
+        # Make request
+        url = get_incident_detail_url(incident.id)
+        data = {"user": self.other_user.id}
+        res = self.client.patch(url, data)
+
+        # Check response
+        self.assertEqual(res.status_code, HTTP_200_OK)
+
+        # Check database object (the user should still be "self.user")
+        incident.refresh_from_db()
+        self.assertEqual(incident.user, self.user)
+
+    def test_delete_incident(self):
+        """Test deleting an incident."""
+        pass
