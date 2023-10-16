@@ -110,3 +110,27 @@ class PrivateIncidentApiTests(TestCase):
             self.assertEqual(getattr(incident, k), v)
 
         self.assertEqual(incident.user, self.user)
+
+    def test_update_incident(self):
+        """Test updating an incident."""
+        incident = Incident.objects.create(
+            user=self.user,
+            subject="Incident",
+            description="Incident description."
+        )
+
+        incident_id = incident.id
+
+        data = {
+            "subject": "New incident",
+            "description": "New incident description"
+        }
+
+        url = get_incident_detail_url(incident.id)
+        res = self.client.put(url, data)
+        incident.refresh_from_db()
+
+        self.assertEqual(incident.id, incident_id)
+        self.assertEqual(incident.user, self.user)
+        self.assertEqual(incident.subject, data["subject"])
+        self.assertEqual(incident.description, data["description"])
