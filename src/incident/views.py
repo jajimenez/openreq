@@ -27,3 +27,7 @@ class IncidentViewSet(ModelViewSet):
             return IncidentSerializer
 
         return self.serializer_class
+
+    def perform_create(self, serializer):
+        """Create an incident."""
+        serializer.save(user=self.request.user)
