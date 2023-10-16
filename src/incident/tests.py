@@ -6,7 +6,7 @@ from django.urls import reverse
 
 from rest_framework.test import APIClient
 from rest_framework.status import (
-    HTTP_200_OK, HTTP_201_CREATED, HTTP_401_UNAUTHORIZED
+    HTTP_200_OK, HTTP_201_CREATED, HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED
 )
 
 from core.models import Incident
@@ -216,4 +216,17 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_delete_incident(self):
         """Test deleting an incident."""
-        pass
+        # Create object
+        i = Incident.objects.create(
+            user=self.user, subject="Incident", description="Description"
+        )
+
+        # Make request
+        url = get_incident_detail_url(i.id)
+        res = self.client.delete(url)
+
+        # Check response
+        self.assertEqual(res.status_code, HTTP_204_NO_CONTENT)
+
+        # Check database object
+        self.assertFalse(Incident.objects.filter(id=i.id).exists())
