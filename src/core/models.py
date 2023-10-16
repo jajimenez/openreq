@@ -1,5 +1,5 @@
 """Core models."""
-from django.db.models import Model, ForeignKey, CASCADE, TextField
+from django.db.models import Model, ForeignKey, CASCADE, CharField, TextField
 from django.conf.global_settings import AUTH_USER_MODEL
 
 
@@ -13,11 +13,17 @@ class Incident(Model):
     """Incident model."""
 
     user = ForeignKey(AUTH_USER_MODEL, on_delete=CASCADE)
-    description = TextField(blank=True, max_length=1000)
+    title = CharField(null=False, blank=False, max_length=200)
+
+    description = TextField(
+        null=True, blank=True, default=None, max_length=2000
+    )
 
     def __str__(self):
         """Get the string representation of the instance."""
-        if len(self.description) > 30:
-            return self.description[:28] + "..."
+        max_length = 50
+
+        if len(self.title) > max_length:
+            return self.title[:max_length - 2] + "..."
         else:
-            return self.description
+            return self.title

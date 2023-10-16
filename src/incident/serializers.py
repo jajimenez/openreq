@@ -6,9 +6,16 @@ from core.models import Incident
 
 
 class IncidentSerializer(ModelSerializer):
-    """Incident objects serializer."""
+    """Summarized Incident objects serializer."""
 
     class Meta:
         model = Incident
-        fields = ["description"]
+        fields = ["id", "title"]
         read_only_fields = ["id"]
+
+
+class IncidentDetailSerializer(IncidentSerializer):
+    """Detailed Incident objects serializer."""
+
+    class Meta(IncidentSerializer.Meta):
+        fields = IncidentSerializer.Meta.fields + ["description"]

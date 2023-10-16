@@ -8,12 +8,17 @@ from rest_framework.test import APIClient
 from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
 
 from core.models import Incident
-from incident.serializers import IncidentSerializer
+from incident.serializers import IncidentSerializer, IncidentDetailSerializer
 
 
 # "incident-list" is defined in the "rest_framework.routers.DefaultRouter"
 # class.
 INCIDENT_LIST_URL = reverse("incident:incident-list")
+
+
+def get_incident_url(incident_id):
+    """Get the URL of an incident."""
+    return reverse("incident:incident-detail", args=[incident_id])
 
 
 class PublicIncidentApiTests(TestCase):
@@ -59,4 +64,13 @@ class PrivateIncidentApiTests(TestCase):
         ser = IncidentSerializer(incidents, many=True)
 
         self.assertEqual(res.status_code, HTTP_200_OK)
+        self.assertEqual(res.data, ser.data)
+
+    def test_get_incident(self):
+        """Test getting an incident."""
+        i = Incident.objects.create(user=self.user, description="Incident")
+        url = get_incident_url(i.id)
+        res = self.client.get(url)
+        ser = IncidentDetailSerializer(i)
+
         self.assertEqual(res.data, ser.data)
