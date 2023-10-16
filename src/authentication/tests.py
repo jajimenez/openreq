@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 
 from rest_framework.test import APIClient
-from rest_framework import status
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 
 AUTH_URL = reverse("api-auth")
@@ -32,7 +32,7 @@ class AuthenticationApiTests(TestCase):
         res = self.client.post(AUTH_URL, data)
 
         # Check response
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(res.status_code, HTTP_200_OK)
         self.assertIn("token", res.data)
 
     def test_create_token_no_username(self):
@@ -42,7 +42,7 @@ class AuthenticationApiTests(TestCase):
         res = self.client.post(AUTH_URL, data)
 
         # Check response
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, HTTP_400_BAD_REQUEST)
         self.assertNotIn("token", res.data)
 
     def test_create_token_empty_username(self):
@@ -52,7 +52,7 @@ class AuthenticationApiTests(TestCase):
         res = self.client.post(AUTH_URL, data)
 
         # Check response
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, HTTP_400_BAD_REQUEST)
         self.assertNotIn("token", res.data)
 
     def test_create_token_no_password(self):
@@ -62,7 +62,7 @@ class AuthenticationApiTests(TestCase):
         res = self.client.post(AUTH_URL, data)
 
         # Check response
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, HTTP_400_BAD_REQUEST)
         self.assertNotIn("token", res.data)
 
     def test_create_token_empty_password(self):
@@ -72,7 +72,7 @@ class AuthenticationApiTests(TestCase):
         res = self.client.post(AUTH_URL, data)
 
         # Check response
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, HTTP_400_BAD_REQUEST)
         self.assertNotIn("token", res.data)
 
     def test_create_token_invalid_credentials(self):
@@ -89,5 +89,5 @@ class AuthenticationApiTests(TestCase):
         res = self.client.post(AUTH_URL, data)
 
         # Check response
-        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(res.status_code, HTTP_400_BAD_REQUEST)
         self.assertNotIn("token", res.data)
