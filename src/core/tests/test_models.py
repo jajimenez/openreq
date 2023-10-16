@@ -2,32 +2,36 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 # from core.models import Tag, Incident
-from core.models import Incident
+from core.models import Tag, Incident
 
 
 class ModelTests(TestCase):
     """Test the Core models."""
 
-    def test_create_user_successful(self):
-        """Test creating a user successfully."""
+    def test_create_user(self):
+        """Test creating a user."""
+        # Create user
         username = "example_user"
         password = "example_password"
 
         model = get_user_model()
         user = model.objects.create_user(username=username, password=password)
 
+        # Check database object
         self.assertEqual(user.username, username)
         self.assertTrue(user.check_password(password))
 
-    # def test_create_tag(self):
-    #     """Test creating a tag successfully."""
-    #     name = "example"
-    #     tag = Tag.objects.create(name=name)
+    def test_create_tag(self):
+        """Test creating a tag."""
+        # Create tag
+        name = "example"
+        tag = Tag.objects.create(name=name)
 
-    #     self.assertEqual(tag.name, name)
+        # Check database object
+        self.assertEqual(tag.name, name)
 
     def test_create_incident(self):
-        """Test creating a tag successfully."""
+        """Test creating an incident."""
         # Create user
         username = "example_user"
         password = "example_password"
@@ -47,6 +51,7 @@ class ModelTests(TestCase):
         # inc = Incident.objects.create(user=user, description=desc, tags=tags)
         inc = Incident.objects.create(user=user, subject=sub, description=desc)
 
+        # Check database object
         self.assertEqual(inc.user.username, username)
         self.assertTrue(inc.user.check_password(password))
         self.assertEqual(inc.subject, sub)
