@@ -54,9 +54,12 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_get_incident_list(self):
         """Test getting the list of incidents of the user."""
-        Incident.objects.create(user=self.user, description="Incident 1")
-        Incident.objects.create(user=self.user, description="Incident 2")
-        Incident.objects.create(user=self.other_user, description="Incident 3")
+        for i in range(1, 4):
+            Incident.objects.create(
+                user=self.user,
+                subject=f"Incident {i}",
+                description=f"Incident {i} detail"
+            )
 
         res = self.client.get(INCIDENT_LIST_URL)
 
@@ -68,7 +71,12 @@ class PrivateIncidentApiTests(TestCase):
 
     def test_get_incident(self):
         """Test getting an incident."""
-        i = Incident.objects.create(user=self.user, description="Incident")
+        i = Incident.objects.create(
+            user=self.user,
+            subject="Incident",
+            description="Incident detail"
+        )
+
         url = get_incident_url(i.id)
         res = self.client.get(url)
         ser = IncidentDetailSerializer(i)

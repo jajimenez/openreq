@@ -42,12 +42,14 @@ class ModelTests(TestCase):
         # tags = [Tag.objects.create(name=name1), Tag.objects.create(name=name2)]
 
         # Create incident
-        desc = "Incident example"
+        sub = "Test incident"
+        desc = "Test incident description"
         # inc = Incident.objects.create(user=user, description=desc, tags=tags)
-        inc = Incident.objects.create(user=user, description=desc)
+        inc = Incident.objects.create(user=user, subject=sub, description=desc)
 
         self.assertEqual(inc.user.username, username)
         self.assertTrue(inc.user.check_password(password))
+        self.assertEqual(inc.subject, sub)
         self.assertEqual(inc.description, desc)
         # self.assertEqual(inc.tags.length, 2)
         # self.assertEqual(inc.tags[0].name, name1)
