@@ -13,8 +13,8 @@ from core.models import Incident
 from incident.serializers import IncidentSerializer, IncidentDetailSerializer
 
 
-# "incident-list" is defined in the "rest_framework.routers.DefaultRouter"
-# class.
+# "incident:api-root", "incident-list" and "incident:incident-detail" are
+# defined in the "rest_framework.routers.DefaultRouter" class.
 INCIDENT_URL = reverse("incident:api-root")
 INCIDENT_LIST_URL = reverse("incident:incident-list")
 
