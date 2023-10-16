@@ -96,11 +96,17 @@ class PrivateIncidentApiTests(TestCase):
         res = self.client.post(INCIDENT_URL, data)
 
         self.assertEqual(res.status_code, HTTP_201_CREATED)
+        self.assertEqual(len(res.data), 3)
         self.assertIn("id", res.data)
 
         incident = Incident.objects.get(id=res.data["id"])
 
         for k, v in data.items():
+            # Check response data
+            self.assertIn(k, res.data)
+            self.assertEqual(res.data[k], v)
+
+            # Check database data
             self.assertEqual(getattr(incident, k), v)
 
         self.assertEqual(incident.user, self.user)
