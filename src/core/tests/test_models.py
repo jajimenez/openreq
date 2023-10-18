@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-# from core.models import Tag, Incident
 from core.models import Tag, Incident
 
 
@@ -40,22 +39,28 @@ class ModelTests(TestCase):
         user = model.objects.create_user(username=username, password=password)
 
         # Create tags
-        # name1 = "Tag 1"
-        # name2 = "Tag 2"
+        name1 = "Tag 1"
+        name2 = "Tag 2"
 
-        # tags = [Tag.objects.create(name=name1), Tag.objects.create(name=name2)]
+        tags = [Tag.objects.create(name=name1), Tag.objects.create(name=name2)]
 
         # Create incident
-        sub = "Test incident"
-        desc = "Test incident description"
-        # inc = Incident.objects.create(user=user, description=desc, tags=tags)
-        inc = Incident.objects.create(user=user, subject=sub, description=desc)
+        sub = "Incident"
+        desc = "Description"
+
+        inc = Incident.objects.create(
+            opened_by=user, subject=sub, description=desc
+        )
+
+        inc.tags.set(tags)
 
         # Check database object
-        self.assertEqual(inc.user.username, username)
-        self.assertTrue(inc.user.check_password(password))
+        self.assertEqual(inc.opened_by.username, username)
+        self.assertTrue(inc.opened_by.check_password(password))
         self.assertEqual(inc.subject, sub)
         self.assertEqual(inc.description, desc)
-        # self.assertEqual(inc.tags.length, 2)
-        # self.assertEqual(inc.tags[0].name, name1)
-        # self.assertEqual(inc.tags[1].name, name2)
+        self.assertEqual(inc.tags.count(), len(tags))
+        self.assertEqual(inc.tags.get(id=tags[0].id).name, name1)
+        self.assertEqual(inc.tags.get(id=tags[1].id).name, name2)
+        self.assertIsNone(inc.assigned_to)
+        self.assertFalse(inc.closed)

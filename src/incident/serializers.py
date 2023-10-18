@@ -5,21 +5,47 @@ from rest_framework.serializers import ModelSerializer
 from core.models import Incident
 
 
-class IncidentSerializer(ModelSerializer):
-    """Summarized Incident objects serializer."""
+class ExistingIncidentSerializer(ModelSerializer):
+    """Summarized existing Incident objects serializer."""
 
     class Meta:
         """Model data."""
 
         model = Incident
-        fields = ["id", "subject"]
-        read_only_fields = ["id"]
+
+        fields = [
+            "id", "opened_by", "subject", "tags", "assigned_to", "closed"
+        ]
+
+        read_only_fields = ["id", "opened_by", "subject"]
 
 
-class IncidentDetailSerializer(IncidentSerializer):
-    """Detailed Incident objects serializer."""
+class ExistingIncidentDetailSerializer(ExistingIncidentSerializer):
+    """Detailed existing Incident objects serializer."""
 
-    class Meta(IncidentSerializer.Meta):
+    class Meta(ExistingIncidentSerializer.Meta):
         """Model data."""
 
-        fields = IncidentSerializer.Meta.fields + ["description"]
+        fields = [
+            "id", "opened_by", "subject", "description", "tags", "assigned_to",
+            "closed"
+        ]
+
+        read_only_fields = \
+            ExistingIncidentSerializer.Meta.read_only_fields + ["description"]
+
+
+class NewIncidentDetailSerializer(ModelSerializer):
+    """Detailed new Incident objects serializer."""
+
+    class Meta:
+        """Model data."""
+
+        model = Incident
+
+        fields = [
+            "id", "opened_by", "subject", "description", "tags", "assigned_to",
+            "closed"
+        ]
+
+        read_only_fields = ["id", "opened_by", "tags", "assigned_to", "closed"]

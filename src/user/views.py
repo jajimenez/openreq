@@ -8,7 +8,7 @@ from user.serializers import UserSerializer
 
 
 class GetAuthUserView(RetrieveAPIView):
-    """View for getting the authenticated user."""
+    """Get the authenticated user."""
 
     serializer_class = UserSerializer
 
