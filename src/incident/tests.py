@@ -10,7 +10,7 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND, HTTP_405_METHOD_NOT_ALLOWED
 )
 
-from core.models import Tag, Incident
+from core.models import Incident
 from incident.serializers import (
     ExistingIncidentSerializer, ExistingIncidentDetailSerializer
 )
