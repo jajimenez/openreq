@@ -14,7 +14,7 @@ class ExistingIncidentSerializer(ModelSerializer):
         model = Incident
 
         fields = [
-            "id", "opened_by", "subject", "tags", "assigned_to", "closed"
+            "id", "opened_by", "category", "subject", "assigned_to", "closed"
         ]
 
         read_only_fields = ["id", "opened_by", "subject"]
@@ -27,8 +27,8 @@ class ExistingIncidentDetailSerializer(ExistingIncidentSerializer):
         """Model data."""
 
         fields = [
-            "id", "opened_by", "subject", "description", "tags", "assigned_to",
-            "closed"
+            "id", "opened_by", "category", "subject", "description",
+            "assigned_to", "closed"
         ]
 
         read_only_fields = \
@@ -44,8 +44,10 @@ class NewIncidentDetailSerializer(ModelSerializer):
         model = Incident
 
         fields = [
-            "id", "opened_by", "subject", "description", "tags", "assigned_to",
-            "closed"
+            "id", "opened_by", "category", "subject", "description",
+            "assigned_to", "closed"
         ]
 
-        read_only_fields = ["id", "opened_by", "tags", "assigned_to", "closed"]
+        read_only_fields = [
+            "id", "opened_by", "category", "assigned_to", "closed"
+        ]

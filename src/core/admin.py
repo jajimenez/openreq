@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from core.models import Tag, Incident
+from core.models import Category, Incident
 
 
 # Register models
-admin.site.register(Tag)
+admin.site.register(Category)
 admin.site.register(Incident)

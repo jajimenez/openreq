@@ -189,16 +189,16 @@ class PrivateIncidentApiTests(TestCase):
         self.assertEqual(len(res.data), 7)
 
         for i in (
-            "id", "opened_by", "subject", "description", "tags", "assigned_to",
-            "closed"
+            "id", "opened_by", "category", "subject", "description",
+            "assigned_to", "closed"
         ):
             self.assertIn(i, res.data)
 
         self.assertIsNotNone(res.data["id"])
         self.assertEqual(res.data["opened_by"], self.user_1.id)
+        self.assertIsNone(res.data["category"])
         self.assertEqual(res.data["subject"], data["subject"])
         self.assertEqual(res.data["description"], data["description"])
-        self.assertEqual(len(res.data["tags"]), 0)
         self.assertIsNone(res.data["assigned_to"])
         self.assertFalse(res.data["closed"])
 
@@ -207,9 +207,9 @@ class PrivateIncidentApiTests(TestCase):
 
         self.assertIsNotNone(incident.id)
         self.assertEqual(incident.opened_by, self.user_1)
+        self.assertIsNone(incident.category)
         self.assertEqual(incident.subject, data["subject"])
         self.assertEqual(incident.description, data["description"])
-        self.assertEqual(incident.tags.count(), 0)
         self.assertIsNone(incident.assigned_to)
         self.assertFalse(incident.closed)
 
@@ -235,16 +235,16 @@ class PrivateIncidentApiTests(TestCase):
         self.assertEqual(len(res.data), 7)
 
         for i in (
-            "id", "opened_by", "subject", "description", "tags", "assigned_to",
-            "closed"
+            "id", "opened_by", "category", "subject", "description",
+            "assigned_to", "closed"
         ):
             self.assertIn(i, res.data)
 
         self.assertEqual(res.data["id"], _id)
         self.assertEqual(res.data["opened_by"], self.user_2.id)
+        self.assertIsNone(res.data["category"])
         self.assertEqual(res.data["subject"], sub)
         self.assertEqual(res.data["description"], desc)
-        self.assertEqual(len(res.data["tags"]), 0)
         self.assertEqual(res.data["assigned_to"], self.user_1.id)
         self.assertTrue(res.data["closed"])
 
@@ -253,9 +253,9 @@ class PrivateIncidentApiTests(TestCase):
 
         self.assertEqual(incident.id, _id)
         self.assertEqual(incident.opened_by, self.user_2)
+        self.assertIsNone(incident.category)
         self.assertEqual(incident.subject, sub)
         self.assertEqual(incident.description, desc)
-        self.assertEqual(incident.tags.count(), 0)
         self.assertEqual(incident.assigned_to, self.user_1)
         self.assertTrue(incident.closed)
 
@@ -281,16 +281,16 @@ class PrivateIncidentApiTests(TestCase):
         self.assertEqual(len(res.data), 7)
 
         for i in (
-            "id", "opened_by", "subject", "description", "tags", "assigned_to",
-            "closed"
+            "id", "opened_by", "category", "subject", "description",
+            "assigned_to", "closed"
         ):
             self.assertIn(i, res.data)
 
         self.assertEqual(res.data["id"], _id)
         self.assertEqual(res.data["opened_by"], self.user_2.id)
+        self.assertIsNone(res.data["category"])
         self.assertEqual(res.data["subject"], sub)
         self.assertEqual(res.data["description"], desc)
-        self.assertEqual(len(res.data["tags"]), 0)
         self.assertEqual(res.data["assigned_to"], self.user_1.id)
         self.assertFalse(res.data["closed"])
 
@@ -299,9 +299,9 @@ class PrivateIncidentApiTests(TestCase):
 
         self.assertEqual(incident.id, _id)
         self.assertEqual(incident.opened_by, self.user_2)
+        self.assertIsNone(incident.category)
         self.assertEqual(incident.subject, sub)
         self.assertEqual(incident.description, desc)
-        self.assertEqual(incident.tags.count(), 0)
         self.assertEqual(incident.assigned_to, self.user_1)
         self.assertFalse(incident.closed)
 
