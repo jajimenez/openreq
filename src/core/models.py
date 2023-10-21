@@ -1,7 +1,8 @@
 """OpenReq - Core - Models."""
 
 from django.db.models import (
-    Model, CharField, TextField, BooleanField, ForeignKey, CASCADE, SET_NULL
+    Model, CharField, TextField, BooleanField, BinaryField, ForeignKey,
+    CASCADE, SET_NULL
 )
 from django.conf.global_settings import AUTH_USER_MODEL
 
@@ -33,6 +34,7 @@ class Category(Model):
 
     class Meta:
         """Model options."""
+
         verbose_name = "category"
         verbose_name_plural = "categories"
 
@@ -78,5 +80,22 @@ class Incident(Model):
 
     class Meta:
         """Model options."""
+
         verbose_name = "incident"
         verbose_name_plural = "incidents"
+
+
+class ClassificationModel(Model):
+    """Classification model."""
+
+    model = BinaryField(null=True, blank=True)
+
+    def __str__(self):
+        """Get the string representation of the instance."""
+        return f"Classification model {self.id}"
+
+    class Meta:
+        """Model options."""
+
+        verbose_name = "classification model"
+        verbose_name_plural = "classification models"
