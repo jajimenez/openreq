@@ -178,17 +178,29 @@ class Command(BaseCommand):
         :param ac: Accuracy score.
         :type ac: str
         """
-        print("\n" + self.get_bordered_title("Confusion matrix") + "\n")
-        print("Classes:", ", ".join(cls_model.classes_))
-        print()
-        print(cm)
+        # Confusion matrix
+        self.stdout.write(
+            "\n" + self.get_bordered_title("Confusion matrix") + "\n\n"
+        )
 
-        print("\n" + self.get_bordered_title("Classification report") + "\n")
-        print(cr)
+        self.stdout.write("Classes: " + ", ".join(cls_model.classes_))
+        self.stdout.write()
+        self.stdout.write(str(cm))
 
-        print("\n" + self.get_bordered_title("Accuracy score") + "\n")
-        print(ac)
-        print()
+        # Classification report
+        self.stdout.write(
+            "\n" + self.get_bordered_title("Classification report") + "\n\n"
+        )
+
+        self.stdout.write(cr)
+
+        # Accuracy score
+        self.stdout.write(
+            "\n" + self.get_bordered_title("Accuracy score") + "\n\n"
+        )
+
+        self.stdout.write(str(ac))
+        self.stdout.write()
 
     def get_bordered_title(self, title: str) -> str:
         """Get a bordered title.
