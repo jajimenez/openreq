@@ -1,5 +1,7 @@
 """OpenReq - Incident - Views."""
 
+import pickle
+
 from rest_framework.generics import (
     ListAPIView, CreateAPIView, RetrieveUpdateAPIView
 )
@@ -8,7 +10,10 @@ from rest_framework.permissions import (
     BasePermission, SAFE_METHODS, IsAuthenticated
 )
 
-from core.models import Incident
+from sklearn.pipeline import Pipeline
+
+from core.models import Category, Incident, ClassificationModel
+from core.text import standardize_text
 from incident.serializers import (
     NewIncidentDetailSerializer, ExistingIncidentSerializer,
     ExistingIncidentDetailSerializer
@@ -89,8 +94,31 @@ class CreateIncidentView(CreateAPIView):
     serializer_class = NewIncidentDetailSerializer
 
     def perform_create(self, serializer):
-        """Create an incident."""
-        return serializer.save(opened_by=self.request.user)
+        """Create an incident.
+
+        If there is a classification model available in the database, the value
+        of the category field of the incident is automatically set to the
+        model's predicted category for the incident.
+        """
+        i = serializer.save(opened_by=self.request.user)
+        m = ClassificationModel.objects.first()
+
+        if m:
+            # Deserialize classification model
+            cls_model: Pipeline = pickle.loads(m.model)
+
+            # Preprocess incident text
+            text = f"{i.opened_by.username} {i.subject} {i.description}"
+            text = standardize_text(text)
+
+            # Predict incident category
+            name = cls_model.predict([text])[0]
+
+            # Update the incident
+            i.category = Category.objects.get(name=name)
+            i.save()
+
+        return i
 
 
 class GetUpdateIncidentView(RetrieveUpdateAPIView):
