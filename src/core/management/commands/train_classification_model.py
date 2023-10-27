@@ -20,18 +20,11 @@ import spacy
 from spacy.language import Language
 
 from core.models import ClassificationModel
+from core.text import standardize_text
 
 
 class Command(BaseCommand):
     """Django command to train an incident classification model."""
-
-    def get_language_model(self) -> Language:
-        """Load the language model.
-
-        :return: Language model.
-        :rtype: Language
-        """
-        return spacy.load("en_core_web_sm")
 
     def get_incidents(self) -> DataFrame:
         """Get the incidents data from the database.
@@ -55,9 +48,7 @@ class Command(BaseCommand):
             connection
         )
 
-    def preprocess_data(
-        self, nlp: Language, incidents_df: DataFrame
-    ) -> DataFrame:
+    def preprocess_data(self, incidents_df: DataFrame) -> DataFrame:
         """Preprocess the incidents data.
 
         :param nlp: Language model.
@@ -79,39 +70,9 @@ class Command(BaseCommand):
         )
 
         inc_df = inc_df[["text", "category"]]
-
-        inc_df.loc[:, "text"] = \
-            inc_df["text"].apply(lambda x: self.standardize_text(nlp, x))
+        inc_df.loc[:, "text"] = inc_df["text"].apply(standardize_text)
 
         return inc_df
-
-    def standardize_text(self, nlp: Language, x: str) -> str:
-        """Standardize text by removing stop words, punctuation and other
-        symbols.
-
-        :param nlp: Language model.
-        :type nlp: Language
-        :param x: Source text.
-        :type x: str
-        :return: Lower cased standardized text.
-        :rtype: str
-        """
-        doc = nlp(x)
-
-        tokens = [
-            t.lemma_.lower()
-            for t in doc
-            if (
-                not t.is_punct and
-                not t.is_bracket and
-                not t.is_currency and
-                not t.is_digit and
-                not t.is_space and
-                not t.is_stop
-            )
-        ]
-
-        return " ".join(tokens)
 
     def split_data(self, incidents_df: DataFrame) -> tuple[DataFrame]:
         """Split the preprocessed incidents data.
@@ -223,32 +184,25 @@ class Command(BaseCommand):
         model = pickle.dumps(cls_model)
 
         # Get the first existing model (it should be the only one)
-        cla_model = ClassificationModel.objects.first()
+        m = ClassificationModel.objects.first()
 
-        if cla_model:
-            cla_model.model = model
+        if m:
+            m.model = model
         else:
-            cla_model = ClassificationModel(model=model)
+            m = ClassificationModel(model=model)
 
         # Save (create or update) the model
-        cla_model.save()
+        m.save()
 
     def handle(self, *args, **kwargs):
         """Run the command logic."""
-        # Load language model. The model must have been first downloaded with
-        # the command "python -m spacy download en_core_web_sm". This command
-        # is ran when building the dev container and the production Docker
-        # images.
-        self.stdout.write("Loading the language model...")
-        nlp = self.get_language_model()
-
         # Read database data
         self.stdout.write("Loading incidents data...")
         incidents_df = self.get_incidents()
 
         # Preprocess data
         self.stdout.write("Preprocessing incidents data...")
-        incidents_df = self.preprocess_data(nlp, incidents_df)
+        incidents_df = self.preprocess_data(incidents_df)
 
         # Split dataset into training and test datasets
         x_train, x_test, y_train, y_test = self.split_data(incidents_df)
