@@ -11,13 +11,21 @@ The `.devcontainer` directory contains configuration to develop the project in
 Visual Studio Code with Docker and a *dev container*. See
 [how to share your Git credentials with the *dev container*](https://code.visualstudio.com/remote/advancedcontainers/sharing-git-credentials).
 
-You can run the API locally by running this command from the `src` directory:
+You can run the following Django commands from the `src` directory.
+
+### Apply the migrations
+
+```bash
+python manage.py migrate
+```
+
+### Run the API
 
 ```bash
 python manage.py runserver
 ```
 
-To run the unit tests:
+### Run the unit tests
 
 ```bash
 python manage.py test
@@ -25,8 +33,14 @@ python manage.py test
 
 ## Management
 
-Once the API is running, you can browse to the administration site in `/admin`.
-To train the incident classification model, run:
+Once the API is running, you can browse the following URLs:
+
+- Administration: `/admin`
+- API documentation: `/api/docs`
+
+You can run the following Django commands from the `src` directory.
+
+### Train the incident classification model
 
 ```bash
 python manage.py train_classification_model
