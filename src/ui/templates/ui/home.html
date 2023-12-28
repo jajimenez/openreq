@@ -1,5 +1,40 @@
 {% extends "ui/base.html" %}
 
 {% block content %}
-<h1>Hello World</h1>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2 class="mb-3">Your open incidents</h2>
+        </div>
+        <div class="col text-end">
+            <a class="btn btn-success" href="#">Create new incident</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    {% if incidents %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3">
+        {% for i in incidents %}
+        <div class="col mb-3">
+            <div class="card" style="height: 100%">
+                <div class="card-body">
+                    <h5 class="card-title">{{ i.subject }}</h5>
+                    <span class="card-subtitle mb-2 badge bg-success-subtle border border-success-subtle text-success-emphasis">Category</span>
+                    <p class="card-text">
+                        {% if i.assigned_to %}
+                        Assigned to <span class="text-success" style="font-style: italic;">{{ i.assigned_to }}</a>
+                        {% else %}
+                        <span class="text-secondary">Not assigned</span>
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning">You have no open incidents.</div>
+    {% endif %}
+</div>
 {% endblock %}

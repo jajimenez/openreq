@@ -7,6 +7,8 @@ from django.contrib.auth import (
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
+from core.models import Incident
+
 
 # Views
 LOGIN_VIEW = "ui:login"
@@ -22,6 +24,8 @@ HOME_TEMPLATE = "ui/home.html"
 def home(request: HttpRequest) -> HttpResponse:
     """Home view.
 
+    This view returns the incidents opened by the user.
+
     :param request: HTTP request
     :type request: HttpRequest
     :return: HTTP response
@@ -29,6 +33,7 @@ def home(request: HttpRequest) -> HttpResponse:
     """
     context = {
         "user": request.user,
+        "incidents": Incident.objects.filter(opened_by=request.user)
     }
 
     return render(request, HOME_TEMPLATE, context=context)
