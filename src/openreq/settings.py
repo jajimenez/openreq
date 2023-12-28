@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "core",
     "authentication",
     "user",
-    "incident"
+    "incident",
+    "ui"
 ]
 
 MIDDLEWARE = [
