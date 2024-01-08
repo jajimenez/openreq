@@ -126,9 +126,11 @@ def home(request: HttpRequest) -> HttpResponse:
 
         incidents = req.json()
 
-        # Get the category name of each incident
+        # Get the category name and the name of the assigned user of each
+        # incident.
         for i in incidents:
             category_id = i["category"]
+            assigned_to_id = i["assigned_to"]
 
             if category_id is not None:
                 url = f"{API_URL}incident/category/{category_id}/"
@@ -138,6 +140,15 @@ def home(request: HttpRequest) -> HttpResponse:
                     raise Exception
 
                 i["category"] = req.json()["name"]
+
+            if assigned_to_id is not None:
+                url = f"{API_URL}user/user/{assigned_to_id}/"
+                req = requests.get(url, headers=headers)
+
+                if req.status_code != 200:
+                    raise Exception
+
+                i["assigned_to"] = req.json()["username"]
 
         context["incidents"] = incidents
     except Exception:
