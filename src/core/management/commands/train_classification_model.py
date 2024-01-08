@@ -16,9 +16,6 @@ from sklearn.metrics import (
     confusion_matrix, classification_report, accuracy_score
 )
 
-import spacy
-from spacy.language import Language
-
 from core.models import ClassificationModel
 from core.text import standardize_text
 

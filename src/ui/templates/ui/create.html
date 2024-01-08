@@ -1,0 +1,44 @@
+{% extends "ui/base.html" %}
+{% load static %}
+{% block title %} - Create new incident{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form class="needs-validation" method="post" action="{% url 'ui:create' %}" novalidate>
+        {% csrf_token %}
+        <div class="row mb-2">
+            <div class="col">
+                <h2>Create new incident</h2>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col">
+                <label for="subject" class="form-label">Subject</label>
+                <input type="text" class="form-control" id="subject" name="subject" required>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col">
+                <label for="description" class="form-label">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="5"></textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-success">Submit</button>
+            </div>
+        </div>
+        {% if error %}
+        <div class="row">
+            <div class="col">
+                <div class="alert alert-danger mt-3">{{ error }}</div>
+            </div>
+        </div>
+        {% endif %}
+    </form>
+</div>
+{% endblock %}
+
+{% block js_files %}
+<script src="{% static 'ui/forms.js' %}"></script>
+{% endblock %}

@@ -2,17 +2,15 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
+    <div class="row mb-2">
         <div class="col">
-            <h2 class="mb-3">Your open incidents</h2>
+            <h2>Your open incidents</h2>
         </div>
         <div class="col text-end">
-            <a class="btn btn-success" href="#">Create new incident</a>
+            <a class="btn btn-success" href="{% url 'ui:create' %}">Create new incident</a>
         </div>
     </div>
-</div>
 
-<div class="container">
     {% if incidents %}
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-2 row-cols-xl-3">
         {% for i in incidents %}
@@ -35,6 +33,10 @@
     </div>
     {% else %}
     <div class="alert alert-warning">You have no open incidents.</div>
+    {% endif %}
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
     {% endif %}
 </div>
 {% endblock %}
