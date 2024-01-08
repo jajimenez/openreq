@@ -2,7 +2,18 @@
 
 from rest_framework.serializers import ModelSerializer
 
-from core.models import Incident
+from core.models import Category, Incident
+
+
+class CategorySerializer(ModelSerializer):
+    """Category objects serializer."""
+
+    class Meta:
+        """Model data."""
+
+        model = Category
+        fields = ["name"]
+        read_only_fields = ["name"]
 
 
 class ExistingIncidentSerializer(ModelSerializer):

@@ -3,7 +3,7 @@
 from django.urls import path
 
 from incident.views import (
-    GetOpenIncidentsView, GetClosedIncidentsView,
+    GetCategoryView, GetOpenIncidentsView, GetClosedIncidentsView,
     GetOpenOpenedByUserIncidentsView, GetOpenAssignedToUserIncidentsView,
     CreateIncidentView, GetUpdateIncidentView
 )
@@ -12,6 +12,7 @@ from incident.views import (
 app_name = "incident"
 
 urlpatterns = [
+    path("category/<int:pk>/", GetCategoryView.as_view(), name="category"),
     path("open/", GetOpenIncidentsView.as_view(), name="open"),
     path("closed/", GetClosedIncidentsView.as_view(), name="closed"),
     path(

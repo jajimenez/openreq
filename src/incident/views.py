@@ -3,7 +3,7 @@
 import pickle
 
 from rest_framework.generics import (
-    ListAPIView, CreateAPIView, RetrieveUpdateAPIView
+    RetrieveAPIView, ListAPIView, CreateAPIView, RetrieveUpdateAPIView
 )
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import (
@@ -15,8 +15,8 @@ from sklearn.pipeline import Pipeline
 from core.models import Category, Incident, ClassificationModel
 from core.text import standardize_text
 from incident.serializers import (
-    NewIncidentDetailSerializer, ExistingIncidentSerializer,
-    ExistingIncidentDetailSerializer
+    CategorySerializer, NewIncidentDetailSerializer,
+    ExistingIncidentSerializer, ExistingIncidentDetailSerializer
 )
 
 
@@ -33,6 +33,16 @@ class IsStaffOrAssigned(BasePermission):
 
         # Write permission is allowed to any staff user and the assigned user
         return request.user.is_staff or request.user == obj.assigned_to
+
+
+class GetCategoryView(RetrieveAPIView):
+    """Get a category."""
+
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
 
 
 class GetOpenIncidentsView(ListAPIView):
