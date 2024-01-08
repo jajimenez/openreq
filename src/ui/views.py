@@ -124,7 +124,22 @@ def home(request: HttpRequest) -> HttpResponse:
         if req.status_code != 200:
             raise Exception
 
-        context["incidents"] = req.json()
+        incidents = req.json()
+
+        # Get the category name of each incident
+        for i in incidents:
+            category_id = i["category"]
+
+            if category_id is not None:
+                url = f"{API_URL}incident/category/{category_id}/"
+                req = requests.get(url, headers=headers)
+
+                if req.status_code != 200:
+                    raise Exception
+
+                i["category"] = req.json()["name"]
+
+        context["incidents"] = incidents
     except Exception:
         context["error"] = "Error getting the incidents."
 

@@ -18,7 +18,9 @@
             <div class="card" style="height: 100%">
                 <div class="card-body">
                     <h5 class="card-title">{{ i.subject }}</h5>
-                    <span class="card-subtitle mb-2 badge bg-success-subtle border border-success-subtle text-success-emphasis">Category</span>
+                    {% if i.category %}
+                    <span class="card-subtitle mb-2 badge bg-success-subtle border border-success-subtle text-success-emphasis">{{ i.category }}</span>
+                    {% endif %}
                     <p class="card-text">
                         {% if i.assigned_to %}
                         Assigned to <span class="text-success" style="font-style: italic;">{{ i.assigned_to }}</a>
