@@ -26,5 +26,5 @@ urlpatterns = [
         name="assigned-to-user"
     ),
     path("incident/", CreateIncidentView.as_view(), name="create"),
-    path("incident/<id>/", GetUpdateIncidentView.as_view(), name="get-update")
+    path("incident/<int:id>/", GetUpdateIncidentView.as_view(), name="get-update")
 ]

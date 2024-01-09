@@ -1,0 +1,42 @@
+{% extends "ui/base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-2">
+        <div class="col">
+            <h2>Incident</h2>
+        </div>
+        <div class="col text-end">
+            <a class="btn btn-success" href="{% url 'ui:home' %}">Go back</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ incident.subject }}</h5>
+                    {% if incident.category %}
+                    <span class="card-subtitle mb-2 badge bg-success-subtle border border-success-subtle text-success-emphasis">{{ incident.category }}</span>
+                    {% endif %}
+                    <p class="card-text">
+                        {% if incident.assigned_to %}
+                        Assigned to <span class="text-success" style="font-style: italic;">{{ incident.assigned_to }}</a>
+                        {% else %}
+                        <span class="text-secondary">Unassigned</span>
+                        {% endif %}
+                        <hr>
+                        <p>
+                            {{ incident.description }}
+                        </p>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+</div>
+{% endblock %}

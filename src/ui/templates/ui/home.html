@@ -17,7 +17,9 @@
         <div class="col mb-3">
             <div class="card" style="height: 100%">
                 <div class="card-body">
-                    <h5 class="card-title">{{ i.subject }}</h5>
+                    <h5 class="card-title">
+                        <a class="card-link link-dark link-underline-opacity-0 link-underline-opacity-100-hover" href="{% url 'ui:incident' i.id %}">{{ i.subject }}</a>
+                    </h5>
                     {% if i.category %}
                     <span class="card-subtitle mb-2 badge bg-success-subtle border border-success-subtle text-success-emphasis">{{ i.category }}</span>
                     {% endif %}

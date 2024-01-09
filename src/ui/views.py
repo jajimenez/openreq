@@ -9,18 +9,20 @@ import requests
 # Views
 LOGIN_VIEW = "ui:login"
 HOME_VIEW = "ui:home"
-CREATE_VIEW = "ui:create"
+INCIDENT_DETAIL_VIEW = "ui:incident"
+CREATE_INCIDENT_VIEW = "ui:create"
 
 # Templates
 LOGIN_TEMPLATE = "ui/login.html"
 HOME_TEMPLATE = "ui/home.html"
-CREATE_TEMPLATE = "ui/create.html"
+INCIDENT_DETAIL_TEMPLATE = "ui/incident.html"
+CREATE_INCIDENT_TEMPLATE = "ui/create.html"
 
 # OpenReq API
 API_URL = "http://localhost:8000/api/"
 AUTH_API_URL = f"{API_URL}auth/"
 OPEN_INCIDENTS_API_URL = f"{API_URL}incident/open/"
-CREATE_INCIDENT_API_URL = f"{API_URL}incident/incident/"
+INCIDENT_API_URL = f"{API_URL}incident/incident/"
 
 
 @require_http_methods(["GET", "POST"])
@@ -157,6 +159,72 @@ def home(request: HttpRequest) -> HttpResponse:
     return render(request, HOME_TEMPLATE, context=context)
 
 
+@require_http_methods(["GET"])
+def incident(request: HttpRequest, id: int) -> HttpResponse:
+    """Incident detail view.
+
+    This view returns the incidents opened by the user.
+
+    :param request: HTTP request
+    :type request: HttpRequest
+    :param id: Incident ID
+    :type id: int
+    :return: HTTP response
+    :rtype: HttpResponse
+    """
+    # Check if we have the authentication token in the session
+    if "token" not in request.session:
+        # Redirect to the Login view
+        incident_url = reverse(INCIDENT_DETAIL_VIEW)
+        login_url = reverse(LOGIN_VIEW)
+        login_url = f"{login_url}?next={incident_url}"
+
+        return redirect(login_url)
+
+    context = {"username": request.session["username"]}
+    token = request.session["token"]
+
+    try:
+        # Get incident
+        url = f"{INCIDENT_API_URL}{id}/"
+        headers = {"AUTHORIZATION": f"Token {token}"}
+        req = requests.get(url, headers=headers)
+
+        if req.status_code != 200:
+            raise Exception
+
+        incident = req.json()
+
+        # Get the category name and the name of the assigned user of the
+        # incident.
+        category_id = incident["category"]
+        assigned_to_id = incident["assigned_to"]
+
+        if category_id is not None:
+            url = f"{API_URL}incident/category/{category_id}/"
+            req = requests.get(url, headers=headers)
+
+            if req.status_code != 200:
+                raise Exception
+
+            incident["category"] = req.json()["name"]
+
+        if assigned_to_id is not None:
+            url = f"{API_URL}user/user/{assigned_to_id}/"
+            req = requests.get(url, headers=headers)
+
+            if req.status_code != 200:
+                raise Exception
+
+            incident["assigned_to"] = req.json()["username"]
+
+        context["incident"] = incident
+    except Exception:
+        context["error"] = "Error getting the incident."
+
+    return render(request, INCIDENT_DETAIL_TEMPLATE, context=context)
+
+
 @require_http_methods(["GET", "POST"])
 def create(request: HttpRequest) -> HttpResponse:
     """Create view.
@@ -171,7 +239,7 @@ def create(request: HttpRequest) -> HttpResponse:
     # Check if we have the authentication token in the session
     if "token" not in request.session:
         # Redirect to the Login view
-        create_url = reverse(CREATE_VIEW)
+        create_url = reverse(CREATE_INCIDENT_VIEW)
         login_url = reverse(LOGIN_VIEW)
         login_url = f"{login_url}?next={create_url}"
 
@@ -195,17 +263,13 @@ def create(request: HttpRequest) -> HttpResponse:
             "description": request.POST.get("description")
         }
 
-        req = requests.post(
-            CREATE_INCIDENT_API_URL,
-            headers=headers,
-            data=data
-        )
+        req = requests.post(INCIDENT_API_URL, headers=headers, data=data)
 
         if req.status_code != 201:
             raise Exception
     except Exception:
         context["error"] = "Error creating the incident."
-        return render(request, CREATE_TEMPLATE, context=context)
+        return render(request, CREATE_INCIDENT_TEMPLATE, context=context)
 
     # Redirect to the Home view
     return redirect(HOME_VIEW)
